@@ -1,0 +1,48 @@
+-- Create the GUI
+local ScreenGui = Instance.new("ScreenGui")
+local SpeedToggleButton = Instance.new("TextButton")
+
+-- Parent the GUI to CoreGui
+ScreenGui.Parent = game.CoreGui
+
+-- Configure the Speed Toggle Button
+SpeedToggleButton.Parent = ScreenGui
+SpeedToggleButton.BackgroundColor3 = Color3.new(0.5, 1, 0.5) -- Green button
+SpeedToggleButton.BorderSizePixel = 0
+SpeedToggleButton.Position = UDim2.new(0.8, -400, 0, 10) -- Positioned on the right side
+SpeedToggleButton.Size = UDim2.new(0, 150, 0, 40)
+SpeedToggleButton.Text = "Fast/Slow"
+SpeedToggleButton.TextColor3 = Color3.new(1, 1, 1) -- White text
+SpeedToggleButton.TextScaled = true
+SpeedToggleButton.Font = Enum.Font.SourceSansBold
+
+-- Variable to keep track of animation speed state
+local isSlow = false
+
+-- Function to toggle animation speed
+local function toggleAnimationSpeed()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local animator = humanoid:FindFirstChildOfClass("Animator")
+            if animator then
+                -- Adjust all current playing animations
+                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                    if isSlow then
+                        track:AdjustSpeed(2) -- Fast
+                    else
+                        track:AdjustSpeed(0.3) -- Slow
+                    end
+                end
+                -- Toggle state
+                isSlow = not isSlow
+            end
+        end
+    end
+end
+
+-- Connect the button to the toggle function
+SpeedToggleButton.MouseButton1Click:Connect(toggleAnimationSpeed)
